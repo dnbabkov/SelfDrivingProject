@@ -14,13 +14,16 @@ public class MoveToGoalAgent : Agent {
     private float reward;
     private Scanners scanners;
     private Movement movement;
+    private Vector3 previousPosition;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
+    private float[] previousDistances;
     private float distanceToTarget;
     private float prevDistanceToTarget;
     private float angleToTarget;
     private float previousRotation;
     private float prevForwardScanRead;
+    private float prevAngleToTarget;
 
     private void Start() {
         reward = 0f;
@@ -49,6 +52,7 @@ public class MoveToGoalAgent : Agent {
         reward = 0f;
         prevDistanceToTarget = 0f;
         previousRotation = initialRotation.z;
+        previousDistances = scanners.getDistances();
 
         transform.localPosition= initialPosition;
         transform.localRotation = initialRotation;
@@ -99,7 +103,14 @@ public class MoveToGoalAgent : Agent {
 
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Debug.Log(actions.DiscreteActions[0]);
+        float currentDistance = Vector3.Distance(transform.localPosition, targetTransform.localPosition);
+        float previousDistance = Vector3.Distance(previousPosition, targetTransform.localPosition);
+        float angleToTarget = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
+        float[] distances = scanners.getDistances();
+        Debug.Log(distances);
+        Debug.Log(previousDistances);
+
+        //Debug.Log(actions.DiscreteActions[0] + "   " + actions.DiscreteActions[1]);
 
         switch (actions.DiscreteActions[0]) {
             case 0:
@@ -117,6 +128,37 @@ public class MoveToGoalAgent : Agent {
                 movement.rotateRight();
                 break;
         }
+
+        if (movement.getCurrentSpeed() <= 0) {
+            SetReward(-0.2f);
+        }
+
+        if (currentDistance < previousDistance) {
+            SetReward(0.1f);
+        }
+        else if (currentDistance > previousDistance) {
+            SetReward(-0.3f);
+        }
+
+        for (int i = 0; i < distances.Length; i++) {
+            if (distances[i] > previousDistances[i]) {
+                SetReward(0.3f);
+            }
+            else if (distances[i] < previousDistances[i]) {
+                SetReward(-0.4f);
+            }
+            previousDistances[i] = distances[i];
+        }
+
+        if (prevAngleToTarget < angleToTarget) {
+            SetReward(-0.1f);
+        } else if (prevAngleToTarget > angleToTarget) {
+            SetReward(0.1f);
+        }
+
+        previousDistances = distances;
+        prevAngleToTarget = angleToTarget;
+        previousPosition = transform.localPosition;
     }
 
     public override void Heuristic(in ActionBuffers actionsOut) {
@@ -124,7 +166,7 @@ public class MoveToGoalAgent : Agent {
     }
 
     void Update() {
-        distanceToTarget = Vector3.Distance(transform.localPosition, targetTransform.localPosition);
+        /*distanceToTarget = Vector3.Distance(transform.localPosition, targetTransform.localPosition);
         angleToTarget = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
 
         //float distanceToObstacleReward = 0f;
@@ -187,7 +229,7 @@ public class MoveToGoalAgent : Agent {
 
         prevForwardScanRead = scanners.getDistances()[scanners.getDistances().Length / 2];
         prevDistanceToTarget = distanceToTarget;
-        previousRotation = transform.localRotation.z;
+        previousRotation = transform.localRotation.z;*/
     }
 
     private void OnGUI() {
@@ -206,21 +248,19 @@ public class MoveToGoalAgent : Agent {
         float angleToGoal = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
 
         if (collision.TryGetComponent<Goal>(out Goal goal)) {
-            SetReward(100f);
+            SetReward(1f);
             EndEpisode();
         }
         
         if (collision.TryGetComponent<Obstacle>(out Obstacle obstacle)) {
-            SetReward(-100f);
+            SetReward(-1f);
             EndEpisode();
         }
 
         if (collision.TryGetComponent<Wall>(out Wall wall))
         {
-            SetReward(-100f);
+            SetReward(-1f);
             EndEpisode();
         }
-
     }
-
 }

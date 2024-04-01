@@ -19,7 +19,6 @@ public class Movement : MonoBehaviour {
     void Update()
     {
         float time = Time.deltaTime;
-        currentSpeed += acceleration * time;
         if (currentSpeed >= maxSpeed)
             currentSpeed = maxSpeed;
         if (currentSpeed < 0 && currentSpeed <= -maxSpeed)
