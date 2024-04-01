@@ -19,6 +19,8 @@ public class MoveToGoalAgent : Agent {
     private float distanceToTarget;
     private float prevDistanceToTarget;
     private float angleToTarget;
+    private float previousRotation;
+    private float prevForwardScanRead;
 
     private void Start() {
         reward = 0f;
@@ -43,8 +45,10 @@ public class MoveToGoalAgent : Agent {
 
     public override void OnEpisodeBegin() {
 
+        prevForwardScanRead = scanners.getDistances()[scanners.getDistances().Length/2];
         reward = 0f;
         prevDistanceToTarget = 0f;
+        previousRotation = initialRotation.z;
 
         transform.localPosition= initialPosition;
         transform.localRotation = initialRotation;
@@ -124,22 +128,67 @@ public class MoveToGoalAgent : Agent {
         distanceToTarget = Vector3.Distance(transform.localPosition, targetTransform.localPosition);
         angleToTarget = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
 
-        float distanceToObstacleReward = 0f;
-        float[] distances = scanners.getDistances(); 
+        //float distanceToObstacleReward = 0f;
+        float[] distances = scanners.getDistances();
+        float angleToTargetReward = 100 / (angleToTarget + 1);
+        float distanceReward = 100 * (prevDistanceToTarget - distanceToTarget);
+        
 
         for (int i = 0; i < scannerObjects.Count; i++) {
             if (distances[i] != 2) {
-                distanceToObstacleReward += - (50 / (distances[i] + 1) + Mathf.Abs(scannerObjects[i].localRotation.z) / 2);
+                //distanceToObstacleReward += - (50 / (distances[i] + 1) + Mathf.Abs(scannerObjects[i].localRotation.z) / 2);
+                angleToTargetReward = 0f;
+                if (scannerObjects[i].localRotation.z == 0) {
+                    //distanceReward = 100 * (distanceToTarget - prevDistanceToTarget) / distances[i];
+                    if (prevForwardScanRead - distances[i] > 0) {
+                        SetReward(-4f);
+                    } else {
+                        SetReward(4f);
+                    }
+                }
+            }            
+        }
+
+        if (movement.getCurrentSpeed() < 0) {
+            SetReward(-3f);
+        }
+
+        for (int i = 0; i < scannerObjects.Count/2; i++) {
+            if (distances[i] != 2 && distances[scannerObjects.Count-1-i] != 2) {
+                if (distances[i] > distances[scannerObjects.Count - 1 - i]) {
+                    if (previousRotation - transform.rotation.z < 0) {
+                        SetReward(2f);
+                    } 
+                }
+                else {
+                    if (previousRotation - transform.rotation.z > 0) {
+                        SetReward(2f);
+                    } 
+                }
+            } else if (distances[i] != 2) {
+                angleToTargetReward = 0;
+                distanceReward = 0;
+                if (previousRotation - transform.rotation.z < 0) {
+                    SetReward(2f);
+                }
+            } else if(distances[scannerObjects.Count - 1 - i] != 2) {
+                angleToTargetReward = 0;
+                distanceReward = 0;
+                if (previousRotation - transform.rotation.z > 0) {
+                    SetReward(2f);
+                } 
             }
         }
 
-        reward = 10 * (prevDistanceToTarget - distanceToTarget) + distanceToObstacleReward + 10 / (angleToTarget + 1);
-
+        reward = distanceReward + angleToTargetReward;
+        // + distanceToObstacleReward
         if (prevDistanceToTarget != 0) {
             SetReward(reward);
         }
 
+        prevForwardScanRead = scanners.getDistances()[scanners.getDistances().Length / 2];
         prevDistanceToTarget = distanceToTarget;
+        previousRotation = transform.localRotation.z;
     }
 
     private void OnGUI() {
@@ -163,13 +212,13 @@ public class MoveToGoalAgent : Agent {
         }
         
         if (collision.TryGetComponent<Obstacle>(out Obstacle obstacle)) {
-            SetReward(-50f);
+            SetReward(-100f);
             EndEpisode();
         }
 
         if (collision.TryGetComponent<Wall>(out Wall wall))
         {
-            SetReward(-1000f);
+            SetReward(-100f);
             EndEpisode();
         }
 
