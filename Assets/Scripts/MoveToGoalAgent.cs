@@ -40,7 +40,7 @@ public class MoveToGoalAgent : Agent {
         sensor.AddObservation(targetTransform.position);
         sensor.AddObservation(scanners.getDistances());
         sensor.AddObservation(movement.getCurrentSpeed());
-        sensor.AddObservation(movement.getAcceleration());
+        
     }
 
     public override void OnEpisodeBegin() {
@@ -124,7 +124,6 @@ public class MoveToGoalAgent : Agent {
     }
 
     void Update() {
-
         distanceToTarget = Vector3.Distance(transform.localPosition, targetTransform.localPosition);
         angleToTarget = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
 

@@ -5,9 +5,8 @@ using UnityEngine;
 public class Movement : MonoBehaviour {
 
     [SerializeField] private float currentSpeed = 0f;
-    [SerializeField] private float acceleration = 0f;
+    [SerializeField] private float acceleration = 2f;
     [SerializeField] private float maxSpeed = 2f;
-    [SerializeField] private float maxAcceleration = 1f;
     [SerializeField] private float rotationSpeed = 15f;
 
     
@@ -45,29 +44,14 @@ public class Movement : MonoBehaviour {
 
     public void resetParameters() {
         currentSpeed = 0;
-        acceleration = 0;
     }
 
     public void accelerate() {
-        if (acceleration < 0) {
-            acceleration = 0;
-        }
-        if (acceleration >= maxAcceleration) {
-            acceleration = maxAcceleration;
-        } else {
-            acceleration += 1f * Time.deltaTime;
-        }
+        currentSpeed += acceleration * Time.deltaTime;
     }
     
     public void decelerate() {
-        if (acceleration >= 0) {
-            acceleration = 0;
-        }
-        if (acceleration <= -maxAcceleration) {
-            acceleration = -maxAcceleration;
-        } else {
-            acceleration -= 1f * Time.deltaTime;
-        }
+        currentSpeed -= acceleration * Time.deltaTime;
     }
 
     public void rotateRight() {
@@ -76,16 +60,6 @@ public class Movement : MonoBehaviour {
 
     public void rotateLeft() {
         this.transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.deltaTime));
-    }
-
-    public void rotateRightAndAccelerate() {
-        accelerate();
-        rotateRight();
-    }
-
-    public void rotateLeftAndAccelerate() {
-        accelerate();
-        rotateLeft();
     }
 
     public float getCurrentSpeed() {
