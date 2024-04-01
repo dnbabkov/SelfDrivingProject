@@ -10,6 +10,10 @@ public class MoveToGoalAgent : Agent {
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Transform obstacleParent;
     [SerializeField] private List<GameObject> obstaclePrefabs;
+    private List<Transform> scannerObjects;
+    private float reward;
+    private Scanners scanners;
+    private Movement movement;
     private Vector3 initialPosition;
     private Quaternion initialRotation;
     private float distanceToTarget;
@@ -17,26 +21,34 @@ public class MoveToGoalAgent : Agent {
     private float angleToTarget;
 
     private void Start() {
+        reward = 0f;
+        scannerObjects = new List<Transform>();
+        foreach (Transform child in transform) {
+            scannerObjects.Add(child);
+        }
+        movement = GetComponent<Movement>();
+        scanners = GetComponent<Scanners>();
         initialPosition = transform.localPosition;
         initialRotation = transform.localRotation;
     }
 
     public override void CollectObservations(VectorSensor sensor) {
         sensor.AddObservation(transform.position);
-        sensor.AddObservation(transform.rotation.z);
+        sensor.AddObservation(Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized));
         sensor.AddObservation(targetTransform.position);
-        sensor.AddObservation(GetComponent<Scanners>().getDistances());
-        sensor.AddObservation(GetComponent<Movement>().getCurrentSpeed());
-        sensor.AddObservation(GetComponent<Movement>().getAcceleration());
+        sensor.AddObservation(scanners.getDistances());
+        sensor.AddObservation(movement.getCurrentSpeed());
+        sensor.AddObservation(movement.getAcceleration());
     }
 
     public override void OnEpisodeBegin() {
 
-        prevDistanceToTarget = 0;
+        reward = 0f;
+        prevDistanceToTarget = 0f;
 
         transform.localPosition= initialPosition;
         transform.localRotation = initialRotation;
-        GetComponent<Movement>().resetParameters();
+        movement.resetParameters();
 
         foreach (Transform child in obstacleParent)
         {
@@ -87,22 +99,18 @@ public class MoveToGoalAgent : Agent {
 
         switch (actions.DiscreteActions[0]) {
             case 0:
-                GetComponent<Movement>().accelerate();
+                movement.accelerate();
                 break;
             case 1:
-                GetComponent<Movement>().decelerate();
-                break;
-            case 2:
+                movement.decelerate();
                 break;
         }
         switch (actions.DiscreteActions[1]) {
             case 0:
-                GetComponent<Movement>().rotateLeft();
+                movement.rotateLeft();
                 break;
             case 1:
-                GetComponent<Movement>().rotateRight();
-                break;
-            case 2:
+                movement.rotateRight();
                 break;
         }
     }
@@ -117,15 +125,31 @@ public class MoveToGoalAgent : Agent {
         angleToTarget = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
 
         float distanceToObstacleReward = 0f;
+        float[] distances = scanners.getDistances(); 
 
-        foreach (float distance in GetComponent<Scanners>().getDistances()) {
-            distanceToObstacleReward += (distance - 2)*5;
+        for (int i = 0; i < scannerObjects.Count; i++) {
+            if (distances[i] != 2) {
+                distanceToObstacleReward += - (50 / (distances[i] + 1) + Mathf.Abs(scannerObjects[i].localRotation.z) / 2);
+            }
         }
+
+        reward = 10 * (prevDistanceToTarget - distanceToTarget) + distanceToObstacleReward + 10 / (angleToTarget + 1);
+
         if (prevDistanceToTarget != 0) {
-            SetReward(10 * (prevDistanceToTarget - distanceToTarget) + distanceToObstacleReward + 10/(angleToTarget+1));
+            SetReward(reward);
         }
 
         prevDistanceToTarget = distanceToTarget;
+    }
+
+    private void OnGUI() {
+        GUILayout.Label("Current speed = " + movement.getCurrentSpeed());
+        GUILayout.Label("Current acceleration = " + movement.getAcceleration());
+        for (int i = 0; i < scanners.getDistances().Length; i++) {
+            GUILayout.Label("Scanner number " + (i + 1) + " returns the distance of " + scanners.getDistances()[i]);
+        }
+        GUILayout.Label("Angle to target is " + Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized));
+        GUILayout.Label("Current reward is " + reward);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
@@ -145,7 +169,7 @@ public class MoveToGoalAgent : Agent {
 
         if (collision.TryGetComponent<Wall>(out Wall wall))
         {
-            SetReward(-100f);
+            SetReward(-1000f);
             EndEpisode();
         }
 

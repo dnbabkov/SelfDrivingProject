@@ -306,18 +306,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 1360195408}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 1683421975}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -878,18 +866,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 953620293}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 1995137}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
 --- !u!1 &344614989
@@ -1140,7 +1116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &437921614
 Transform:
   m_ObjectHideFlags: 0
@@ -1848,18 +1824,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 1335319329}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 2078090513}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -2431,18 +2395,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 1264353337}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 858662821}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -2994,7 +2946,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &823665625
 Transform:
   m_ObjectHideFlags: 0
@@ -3496,7 +3448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1112981660
 Transform:
   m_ObjectHideFlags: 0
@@ -3531,7 +3483,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1170183370
 Transform:
   m_ObjectHideFlags: 0
@@ -4150,18 +4102,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 960938889}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 1817922511}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -4445,7 +4385,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1365575336
 Transform:
   m_ObjectHideFlags: 0
@@ -4673,7 +4613,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1458717267
 Transform:
   m_ObjectHideFlags: 0
@@ -4708,7 +4648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1496334436
 Transform:
   m_ObjectHideFlags: 0
@@ -6408,18 +6348,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 405895375}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 500579271}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -6440,7 +6368,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1958674131
 Transform:
   m_ObjectHideFlags: 0
@@ -7146,18 +7074,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 1051287498}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 885216433}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -7246,18 +7162,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 1346894288}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 301526843}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 0}
@@ -7731,18 +7635,6 @@ PrefabInstance:
       propertyPath: randomExplorationChance
       value: 0.01
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: goalPosition
-      value: 
-      objectReference: {fileID: 1640261182}
-    - target: {fileID: 0}
-      propertyPath: obstacleParent
-      value: 
-      objectReference: {fileID: 998037289}
     m_RemovedComponents:
     - {fileID: 1660893794, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
     - {fileID: 8306009226654020629, guid: 983bb758b538b0b448778d895c5971b9, type: 3}
