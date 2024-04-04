@@ -12,8 +12,12 @@ public class MoveToGoalAgent : Agent {
     [SerializeField] private Transform entrance;
     [SerializeField] private List<GameObject> obstaclePrefabs;
 
+    private int numberOfAttempts = 0;
+    private int numberOfSuccessfulAttempts = 0;
+    private float ratioOfSuccessfulAttempts = 0f;
     private List<Transform> scannerObjects;
     private float reward;
+    private float currentAngle;
     private Scanners scanners;
     private Movement movement;
     private Vector3 previousPosition;
@@ -39,13 +43,16 @@ public class MoveToGoalAgent : Agent {
 
     public override void CollectObservations(VectorSensor sensor) {
         sensor.AddObservation(transform.localPosition);
-        sensor.AddObservation(transform.rotation.z);
+        sensor.AddObservation(transform.rotation.z % 360);
         sensor.AddObservation(Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized));
         sensor.AddObservation(targetTransform.localPosition);
         sensor.AddObservation(movement.getCurrentSpeed());
     }
 
     public override void OnEpisodeBegin() {
+
+        numberOfAttempts += 1;
+        ratioOfSuccessfulAttempts = (float)numberOfSuccessfulAttempts / numberOfAttempts;
 
         transform.localPosition = new Vector3(Random.Range(-8.3f, -5.9f), Random.Range(-4f, 4f));
         transform.Rotate(new Vector3(0, 0, Random.Range(-180f, 180f)));
@@ -130,10 +137,15 @@ public class MoveToGoalAgent : Agent {
         }*/
 
         if (currentDistance < previousDistance) {
-            SetReward(0.1f);
+            float angleReward = Mathf.Abs(Mathf.Cos(angleToTarget * Mathf.Deg2Rad)) / 2;
+            float speedReward = movement.getCurrentSpeed() + 1;
+            SetReward((1f + angleReward) * speedReward);
+        } else if (currentDistance > previousDistance) {
+            SetReward(-1f);
         }
-        else if (currentDistance > previousDistance) {
-            SetReward(-0.1f);
+
+        if (movement.getCurrentSpeed() == 0) {
+            SetReward(-0.5f);
         }
 
         /*
@@ -143,8 +155,7 @@ public class MoveToGoalAgent : Agent {
             SetReward(0.1f);
         }
         */
-        //previousDistances = distances;
-        //prevAngleToTarget = angleToTarget;
+        prevAngleToTarget = angleToTarget;
         previousPosition = transform.localPosition;
     }
 
@@ -226,12 +237,10 @@ public class MoveToGoalAgent : Agent {
         GUILayout.Label("Current position is:\nx = " + transform.localPosition.x + "\ny = " + transform.localPosition.y);
         GUILayout.Label("Target position is:\nx = " + targetTransform.localPosition.x + "\ny = " + targetTransform.localPosition.y);
         GUILayout.Label("Current distance to target = " + Vector3.Distance(transform.localPosition, targetTransform.localPosition));
-        //GUILayout.Label("Current acceleration = " + movement.getAcceleration());
-        /*for (int i = 0; i < scanners.getDistances().Length; i++) {
-            GUILayout.Label("Scanner number " + (i + 1) + " returns the distance of " + scanners.getDistances()[i]);
-        }*/
         GUILayout.Label("Angle to target is " + Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized));
-        //GUILayout.Label("Current reward is " + reward);
+        GUILayout.Label("Attempt number is " + numberOfAttempts);
+        GUILayout.Label("Number of successful attempts is " + numberOfSuccessfulAttempts);
+        GUILayout.Label("Success ratio is " + ratioOfSuccessfulAttempts);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
@@ -240,18 +249,23 @@ public class MoveToGoalAgent : Agent {
         float angleToGoal = Vector3.Angle(transform.up, (targetTransform.localPosition - transform.localPosition).normalized);
 
         if (collision.TryGetComponent<Goal>(out Goal goal)) {
-            SetReward(1f / (movement.getCurrentSpeed() + 1));
+            float angleQuotient = Mathf.Abs(Mathf.Cos(angleToGoal * Mathf.Deg2Rad));
+            SetReward(400f / (Mathf.Abs(movement.getCurrentSpeed()) + 1f) + angleQuotient * 10);
+            numberOfSuccessfulAttempts += 1;
+            Debug.Log("Reached the target");
             EndEpisode();
         }
         
         if (collision.TryGetComponent<Obstacle>(out Obstacle obstacle)) {
-            SetReward(-1f);
+            SetReward(-400f * (Mathf.Abs(movement.getCurrentSpeed()) + 1f));
+            Debug.Log("Collided with an obstacle");
             EndEpisode();
         }
 
         if (collision.TryGetComponent<Wall>(out Wall wall))
         {
-            SetReward(-1f);
+            SetReward(-400f * (Mathf.Abs(movement.getCurrentSpeed()) + 1f));
+            Debug.Log("Collided with the wall");
             EndEpisode();
         }
     }

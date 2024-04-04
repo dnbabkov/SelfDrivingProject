@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9622642, g: 0.94257325, b: 0.29503384, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -120,7 +120,6 @@ MonoBehaviour:
   currentSpeed: 0
   acceleration: 0
   maxSpeed: 1
-  maxAcceleration: 1
   rotationSpeed: 15
 --- !u!60 &8714903109337669579
 PolygonCollider2D:
@@ -189,6 +188,7 @@ MonoBehaviour:
   MaxStep: 0
   targetTransform: {fileID: 0}
   obstacleParent: {fileID: 0}
+  entrance: {fileID: 0}
   obstaclePrefabs:
   - {fileID: 1502225790461153248, guid: ff94dc66e99cdbb408085bb12da6caac, type: 3}
   - {fileID: 1760004173338767768, guid: 752e2df24168f2a4795142dc616a8d6e, type: 3}
