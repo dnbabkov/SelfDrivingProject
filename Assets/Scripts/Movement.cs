@@ -8,24 +8,29 @@ public class Movement : MonoBehaviour {
     [SerializeField] private float acceleration = 2f;
     [SerializeField] private float maxSpeed = 2f;
     [SerializeField] private float rotationSpeed = 15f;
-
+    private Rigidbody2D rb;
     
 
     // Start is called before the first frame update
     void Start() {
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float time = Time.deltaTime;
+        float time = Time.fixedDeltaTime;
+
         if (currentSpeed >= maxSpeed)
             currentSpeed = maxSpeed;
+
         if (currentSpeed < 0 && currentSpeed <= -maxSpeed)
-        {
             currentSpeed = -maxSpeed;
-        }
-        this.transform.position += transform.up * (currentSpeed * time);
+
+        transform.position += transform.up * (currentSpeed * time);
+
+        //rb.MovePosition(rb.position + (new Vector2(0f, 1f) * rb.rotation * currentSpeed * time));
+
         if (Input.GetKey(KeyCode.W)) {
             accelerate();
         }
@@ -46,19 +51,21 @@ public class Movement : MonoBehaviour {
     }
 
     public void accelerate() {
-        currentSpeed += acceleration * Time.deltaTime;
+        currentSpeed += acceleration * Time.fixedDeltaTime;
     }
     
     public void decelerate() {
-        currentSpeed -= acceleration * Time.deltaTime;
+        currentSpeed -= acceleration * Time.fixedDeltaTime;
     }
 
     public void rotateRight() {
-        this.transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime));
+        //rb.AddTorque(rotationSpeed);
+        transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.fixedDeltaTime));
     }
 
     public void rotateLeft() {
-        this.transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.deltaTime));
+        //rb.AddTorque(-rotationSpeed);
+        transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.fixedDeltaTime));
     }
 
     public float getCurrentSpeed() {
